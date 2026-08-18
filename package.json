@@ -1,0 +1,29 @@
+{
+  "name": "spotify-backend",
+  "version": "1.0.0",
+  "description": "A robust RESTful API built with Node.js, Express, and MongoDB that mimics the core backend functionalities of a music streaming platform. This project features secure JWT-based authentication, role-based access control (Normal Users vs. Artists), and cloud-based media storage.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adiXbuild/spotify-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/adiXbuild/spotify-backend/issues"
+  },
+  "homepage": "https://github.com/adiXbuild/spotify-backend#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.2"
+  }
+}
