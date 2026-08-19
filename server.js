@@ -1,4 +1,6 @@
-require("dotenv");
+require("dotenv").config() ;
 const app = require("./src/app");
 
-configDotenv.config()
+app.listen(3000, ()=>{
+    console.log("server started successfully!")
+})
