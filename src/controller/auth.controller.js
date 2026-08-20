@@ -2,89 +2,103 @@ const userModel = require("../model/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-async function registerUser(req,res){
+async function registerUser(req, res) {
 
-    const{ username, email, password, role = "user"}= req.body;
-    
-    const isuseralreadyexists = await userModel.findOne({
+    const { username, email, password, role = "user" } = req.body;
+    const isUserAlreadyExists = await userModel.findOne({
         $or: [
-            {username},
-            {email}
+            { username },
+            { email }
         ]
-    })
+    });
 
-    const hash = await bcrypt.hash("password", 10)
-
-    if (isuseralreadyexist){
+    if (isUserAlreadyExists) {
         return res.status(409).json({
-            message : "User already exists!"
-        })
+            message: "User already exists!"
+        });
     }
-    else {
-        const user = await userModel.create({
-            username,
-            email, 
-            password: hash, 
-            role
-        })
-    }
-   
-    const token = jwt.sign({
-        id: user._id,
-        role: user.role
-    }, process.env.JWT_SECRET)
 
-    res.cookie("token", token)
+    // Hash the actual password
+    const hash = await bcrypt.hash(password, 10);
 
-    res.status({
-        message: "User registered successfully!",
-        user:{
+    // Create user
+    const user = await userModel.create({
+        username,
+        email,
+        password: hash,
+        role
+    });
+
+    // Create JWT
+    const token = jwt.sign(
+        {
             id: user._id,
-            password: user.password,
+            role: user.role
+        },
+        process.env.JWT_SECRET
+    );
+
+    // Store token in cookie
+    res.cookie("token", token);
+
+    return res.status(201).json({
+        message: "User registered successfully!",
+        user: {
+            id: user._id,
+            username: user.username,
             email: user.email,
             role: user.role
         }
-    })
+    });
 }
 
-async function loginUser(req, res){
+async function loginUser(req, res) {
+
+    const { username, email, password } = req.body;
+
     const user = await userModel.findOne({
-        $or:[
-            {username},
-            {email}
+        $or: [
+            { username },
+            { email }
         ]
-    })
+    });
 
-    if(!user){
+    if (!user) {
         return res.status(401).json({
-            message: "user not found..."
-        })
+            message: "User not found..."
+        });
     }
 
-    const ispwdValid = await bcrypt.compare(password, user.password)
+    const isPwdValid = await bcrypt.compare(
+        password,
+        user.password
+    );
 
-    if(!ispwdValid){
+    if (!isPwdValid) {
         return res.status(401).json({
-            message: "invalid password "
-        })
+            message: "Invalid password"
+        });
     }
 
-    const token = jwt.sign({
-        id:user._id,
-        role:user.role
-    }, process.env.JWT_SECRET)
-
-    res.cookie("token", token)
-
-    res.status({
-        message: "User registered successfully!",
-        user:{
+    const token = jwt.sign(
+        {
             id: user._id,
-            password: user.password,
+            role: user.role
+        },
+        process.env.JWT_SECRET
+    );
+
+    res.cookie("token", token);
+
+    return res.status(200).json({
+        message: "Login successful!",
+        user: {
+            id: user._id,
+            username: user.username,
             email: user.email,
             role: user.role
         }
-    })
+    });
 }
 
 

@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const { kStringMaxLength } = require("node:buffer");
 
 const userSchema = new mongoose.Schema({
-    users:{
+    username:{
         type : String,
         required : true,
         unique : true
