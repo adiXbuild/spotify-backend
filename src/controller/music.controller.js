@@ -37,7 +37,7 @@ async function createMusic(req, res) {
         const music = await musicModel.create({
             uri: result.url,
             title,
-            artist: decoded.id
+            artist: req.user.id        //before middleware this "decoded.id" we were using!
         });
 
         return res.status(201).json({
@@ -88,7 +88,7 @@ async function createAlbum(req, res) {
 
         const album = await albumModel.create({
             title,
-            artist: decoded.id,
+            artist: req.user.id,      // here also replaced "decoded.id" with req.user.id!
             music: musicIds
         });
 
@@ -108,4 +108,13 @@ async function createAlbum(req, res) {
 }
 
 
-module.exports = {createMusic, createAlbum};
+async function getAllMusics(req, res){
+    const music = await musicModel.find();
+
+    res.status.json({
+        message : " all music fetched successfully!",
+        musics: musics,
+    })
+}
+
+module.exports = {createMusic, createAlbum, getAllMusics};
